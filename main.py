@@ -116,22 +116,28 @@ def create_new_post():
         db.session.commit()
 
     return render_template("new_post.html",form=form)
-    
 
 
-# @app.route('/form-entry' , methods=["POST"])
-# def receive_data():
-#     if request.method == "POST":
-#         name = request.form["name"]
-#         email = request.form["email"]
-#         phone = request.form["phone"]
-#         message = request.form["message"]
-#         print(name,message,email,phone)
-#
-#     else:
-#         print("get")
+@app.route('/edit_post/<int:id>',methods=['GET','POST'])
+def edit_post(id):
+    post = db.get_or_404(Blog,id)
+    form = Form(
+        title=post.title,
+        name=post.name,
+        img_url=post.img_url,
+        subtitle=post.subtitle,
+        body=post.body
+    )
 
-
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.name = form.name.data
+        post.img_url = form.img_url.data
+        post.subtitle = form.subtitle.data
+        post.body = form.body.data
+        db.session.commit()
+        return redirect(url_for('post_page',id=id))
+    return render_template("new_post.html",form=form)
 
 if __name__ == "__main__":
     app.run(debug=True)
