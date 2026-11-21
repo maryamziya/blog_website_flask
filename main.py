@@ -139,6 +139,14 @@ def edit_post(id):
         return redirect(url_for('post_page',id=id))
     return render_template("new_post.html",form=form)
 
+@app.route('/delete_post/<int:id>',methods=['GET','POST'])
+def delete(id):
+    post = db.get_or_404(Blog,id)
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('get_all_posts'))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 
